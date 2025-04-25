@@ -35,16 +35,3 @@ header button {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-
-.image-card {
-  width: 18vw;
-  height: 18vw;
-  background-color: antiquewhite;
-  border-radius: 12px;
-  border: 2px solid grey;
-  margin: 2vw;
-}
-
-.image-card:hover {
-  background-color: rgb(230, 214, 194);
-}
