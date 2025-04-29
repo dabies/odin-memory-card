@@ -1,15 +1,55 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import './App.css';
+import './styles/App.css';
 import Header from './components/header';
-import Card from './components/card';
 import InstructionsModal from './components/instructions';
+import CardGrid from './components/cardGrid';
+import Footer from './components/footer';
+import WinnerModal from './components/winner';
 
 function App() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [isInstructionsOpen, setIsIntructionsOpen] = useState(true);
+  const [clickedCards, setClickedCards] = useState([]);
+  const [hasPlayerWon, setHasPlayerWon] = useState(false);
+  const [pokeCards, setPokeCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const pokemonList = [
+    'gengar', 'snorlax', 'alakazam', 'zoroark', 'typhlosion', 'rotom',
+    'rayquaza', 'lucario', 'dragonite', 'excadrill', 'hydreigon', 'doublade'
+  ];
 
+  useEffect (() => {
+    const loadPokemonData = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+
+      try {
+        const fetchedCards = await Promise.all(
+          pokemonList.map(async (pokemonName, index) => {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+            if(!response.ok) {
+              throw new Error (`Could not fetch ${pokemonName}`);
+            }
+            const data = await response.json();
+            return {
+              id: index + 1,
+              name: pokemonName,
+              image: data.sprites.other['official-artwork']?.front_default || data.sprites.front_default
+            };
+          })
+        );
+        setPokeCards(fetchedCards);
+      } catch(err) {
+        setErrorMessage(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadPokemonData(); 
+  }, []);
 
   function openInstructions() {
     setIsIntructionsOpen(true);
@@ -19,25 +59,59 @@ function App() {
     setIsIntructionsOpen(false);
   }
 
+  function closeWinnerModal() {
+    setHasPlayerWon(false);
+  }
+
+  function handleCardClick(id) {
+    if(isLoading || errorMessage || hasPlayerWon) {
+      return;
+    }
+
+    let currentScore = score;
+    console.log("clickedCards:", clickedCards);
+    const isCardAlreadyClicked = clickedCards.includes(id);
+
+    if(isCardAlreadyClicked) {
+      setScore(0);
+      setClickedCards([]);
+    } else {
+      setScore(currentScore + 1);
+      setClickedCards([...clickedCards, id]);
+    }
+    
+    if (highScore < currentScore + (isCardAlreadyClicked ? 0 : 1)) {
+      setHighScore(currentScore + (isCardAlreadyClicked ? 0 : 1));
+    }
+
+    if (score === 11) {
+      setHasPlayerWon(true);
+      setScore(0);
+      setClickedCards([]);
+    }
+
+    const shuffledCards = [...pokeCards].sort(() => Math.random() - 0.5);
+    setPokeCards(shuffledCards);
+  }
+
+  if (isLoading) {
+    return <div>Loading Pokemon...</div>
+  }
+
+  if (errorMessage) {
+    return <div>Error loading Pokemon: {errorMessage}</div>
+  }
+
 
   return (
     <>
-      <Header openInstructions={openInstructions}></Header>
+      <Header score={score} highScore={highScore} openInstructions={openInstructions}></Header>
       <InstructionsModal isOpen={isInstructionsOpen} onClose={closeInstructions}></InstructionsModal>
+      <WinnerModal gameOver={hasPlayerWon} onClose={closeWinnerModal}></WinnerModal>
       <div className="card-div">
-        <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
-        <Card>4</Card>
-        <Card>5</Card>
-        <Card>6</Card>
-        <Card>7</Card>
-        <Card>8</Card>
-        <Card>9</Card>
-        <Card>10</Card>
-        <Card>11</Card>
-        <Card>12</Card>
+        <CardGrid cardArray={pokeCards} handleClick={handleCardClick}></CardGrid>
       </div>
+      <Footer></Footer>
     </>
   )
   

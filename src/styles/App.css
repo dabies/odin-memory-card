@@ -35,3 +35,28 @@ header button {
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
+@media (max-width: 768px) {
+  .card-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    padding: 3vw;
+    gap: 3vw;
+  }
+
+  header p {
+    font-size: 1em;
+  }
+  
+  header h1 {
+    font-size: 1.75rem;
+  }
+
+  header button {
+    font-size: 0.75em;
+  }
+}

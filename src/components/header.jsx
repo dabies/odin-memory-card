@@ -1,6 +1,4 @@
 export default function Header({ openInstructions, score, handleScore, highScore }) {
-    score = 0;
-    highScore = 0;
 
     return(
         <header>

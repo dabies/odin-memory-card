@@ -1,5 +1,5 @@
 import React from "react"
-import './instructions.css'
+import '../styles/instructions.css'
 
 export default function InstructionsModal( {isOpen, onClose}) {
     if(!isOpen) {

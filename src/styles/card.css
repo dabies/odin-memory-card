@@ -1,0 +1,49 @@
+.image-card {
+    width: 18vw;
+    height: 18vw;
+    background-color: antiquewhite;
+    border-radius: 12px;
+    border: 2px solid grey;
+    margin: 2vw;
+    position: relative;
+  }
+  
+  .image-card:hover {
+    background-color: rgb(230, 214, 194);
+  }
+
+  .image-card img {
+    width: 69%;
+    height: 69%;
+    margin-top: 5%;
+  }
+
+  .image-card h3 {
+    font-size: 1.8em;
+  }
+
+  @media (max-width: 768px) {
+    .image-card {
+      width: 60vw;
+      height: 60vw;
+    }
+
+    .image-card h3 {
+      font-size: 2em;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .image-card h3 {
+      position: relative;
+      font-size: 1.4em;
+      bottom: 3vw;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .image-card h3 {
+      position: relative;
+      bottom: 2vw;
+    }
+  }
