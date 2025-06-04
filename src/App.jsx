@@ -6,6 +6,7 @@ import InstructionsModal from './components/instructions';
 import CardGrid from './components/cardGrid';
 import Footer from './components/footer';
 import WinnerModal from './components/winner';
+import LoserModal from './components/loser';
 
 function App() {
   const [score, setScore] = useState(0);
@@ -16,6 +17,7 @@ function App() {
   const [pokeCards, setPokeCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [hasPlayerLost, setHasPlayerLost] = useState(false);
   const pokemonList = [
     'gengar', 'snorlax', 'alakazam', 'zoroark', 'typhlosion', 'rotom',
     'rayquaza', 'lucario', 'dragonite', 'excadrill', 'hydreigon', 'doublade'
@@ -63,6 +65,10 @@ function App() {
     setHasPlayerWon(false);
   }
 
+  function closeLoserModal() {
+    setHasPlayerLost(false);
+  }
+
   function handleCardClick(id) {
     if(isLoading || errorMessage || hasPlayerWon) {
       return;
@@ -75,6 +81,7 @@ function App() {
     if(isCardAlreadyClicked) {
       setScore(0);
       setClickedCards([]);
+      setHasPlayerLost(true);
     } else {
       setScore(currentScore + 1);
       setClickedCards([...clickedCards, id]);
@@ -107,6 +114,7 @@ function App() {
     <>
       <Header score={score} highScore={highScore} openInstructions={openInstructions}></Header>
       <InstructionsModal isOpen={isInstructionsOpen} onClose={closeInstructions}></InstructionsModal>
+      <LoserModal playerHasLost={hasPlayerLost} onClose={closeLoserModal} highScore={highScore}></LoserModal>
       <WinnerModal gameOver={hasPlayerWon} onClose={closeWinnerModal}></WinnerModal>
       <div className="card-div">
         <CardGrid cardArray={pokeCards} handleClick={handleCardClick}></CardGrid>

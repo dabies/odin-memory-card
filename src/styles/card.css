@@ -20,6 +20,7 @@
 
   .image-card h3 {
     font-size: 1.8em;
+    color: blueviolet;
   }
 
   @media (max-width: 768px) {
